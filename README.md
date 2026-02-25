@@ -10,20 +10,39 @@ Un programa simple escrito en Python para gestionar archivos y ejecutar comandos
 - **Comandos del sistema**: Ejecuta cualquier comando, incluyendo `shutdown`.
 - **Ejecución directa**: Se ejecuta en la terminal actual sin dependencias externas.
 
-## Instalación con apt
+## Instalación con apt (Recomendado)
 
-Para instalar LUCASMAN como un paquete Debian:
+Para instalar LUCASMAN globalmente en cualquier máquina Linux con apt (Kali, Ubuntu, Debian):
 
-1. Construye el paquete (si no está): `dpkg-deb --build deb_package lucasman_1.0_all.deb`
+1. **Agrega el repositorio oficial:**
+   ```
+   echo "deb [trusted=yes] https://lucasbazuki-web-developer.github.io/LUCASMAN/ ./" | sudo tee /etc/apt/sources.list.d/lucasman.list
+   ```
+
+2. **Actualiza la lista de paquetes:**
+   ```
+   sudo apt update
+   ```
+
+3. **Instala LUCASMAN:**
+   ```
+   sudo apt install lucasman
+   ```
+
+4. **Ejecuta el programa:**
+   ```
+   lucasman
+   ```
+
+¡Listo! Ahora `lucasman` estará disponible en cualquier máquina que siga estos pasos.
+
+## Instalación Manual (Alternativa)
+
+Si prefieres instalar manualmente sin repo:
+
+1. Descarga el paquete: `wget https://github.com/lucasbazuki-web-developer/LUCASMAN/raw/main/repo/lucasman_1.0_all.deb`
 2. Instala: `sudo dpkg -i lucasman_1.0_all.deb`
 3. Ejecuta: `lucasman`
-
-## Cómo Ejecutar (sin instalar)
-
-1. Asegúrate de tener Python 3 instalado.
-2. Ejecuta el programa: `python3 main.py`
-3. Interactúa con el prompt `LUCASMAN>`.
-4. Al hacer `exit`, el programa termina (la terminal queda abierta).
 
 ## Comandos Especiales
 
