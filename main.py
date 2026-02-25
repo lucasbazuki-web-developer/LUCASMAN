@@ -66,27 +66,9 @@ def run_program():
         except EOFError:
             print("\nFin de entrada. Saliendo...")
             break
-    # Cerrar el terminal al salir
-    os.system("exit")
 
 def main():
-    if len(sys.argv) == 1:
-        # Modo launcher: abrir nueva terminal
-        try:
-            subprocess.run([
-                "gnome-terminal",
-                "--title", "LUCASMAN terminal",
-                "--", "python3", __file__, "--run"
-            ])
-        except FileNotFoundError:
-            print("Error: gnome-terminal no encontrado. Instálalo con 'sudo apt install gnome-terminal'")
-        except Exception as e:
-            print(f"Error al abrir terminal: {e}")
-    elif len(sys.argv) == 2 and sys.argv[1] == "--run":
-        # Modo programa: ejecutar el gestor
-        run_program()
-    else:
-        print("Uso: python3 main.py")
+    run_program()
 
 if __name__ == "__main__":
     main()
