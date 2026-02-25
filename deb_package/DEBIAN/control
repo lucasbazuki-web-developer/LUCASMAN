@@ -1,0 +1,9 @@
+Package: lucasman
+Version: 1.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: python3
+Maintainer: Lucas <lucas@example.com>
+Description: LUCASMAN - Gestor de Archivos y Sistema
+ Un programa simple para gestionar archivos y comandos en Kali Linux.

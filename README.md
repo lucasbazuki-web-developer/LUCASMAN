@@ -10,7 +10,15 @@ Un programa simple escrito en Python para gestionar archivos y ejecutar comandos
 - **Comandos del sistema**: Ejecuta cualquier comando, incluyendo `shutdown`.
 - **Ejecución directa**: Se ejecuta en la terminal actual sin dependencias externas.
 
-## Cómo Ejecutar
+## Instalación con apt
+
+Para instalar LUCASMAN como un paquete Debian:
+
+1. Construye el paquete (si no está): `dpkg-deb --build deb_package lucasman_1.0_all.deb`
+2. Instala: `sudo dpkg -i lucasman_1.0_all.deb`
+3. Ejecuta: `lucasman`
+
+## Cómo Ejecutar (sin instalar)
 
 1. Asegúrate de tener Python 3 instalado.
 2. Ejecuta el programa: `python3 main.py`
@@ -21,8 +29,13 @@ Un programa simple escrito en Python para gestionar archivos y ejecutar comandos
 
 - `cd <directorio>`: Cambiar directorio.
 - `pwd`: Mostrar directorio actual.
+- `ls`: Listar archivos.
+- `clear`: Limpiar pantalla.
+- `help`: Mostrar ayuda.
+- `windows`: Abrir nueva ventana de terminal (requiere xterm).
 - `shutdown`: Apagar el sistema (requiere permisos de sudo).
 - `exit`: Salir del programa.
+- Cualquier comando del sistema.
 
 ## Requisitos
 
