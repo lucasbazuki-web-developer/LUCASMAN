@@ -45,3 +45,25 @@ LUCASMAN> exit
 ```
 
 ¡Disfruta gestionando tu sistema con LUCASMAN!
+
+
+
+## INSTALACION
+
+Pon en tu terminal:
+
+```
+nano LUCASMAN.py
+```
+
+Pega el codigo de main.py
+y presiona CTRL X luego Y y luego ENTER y lo has guardado, luego escribe
+
+```
+chmod +x LUCASMAN.py
+./LUCASMAN.py
+```
+
+¡Y LISTO!
+
+disfrutalo
