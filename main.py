@@ -6,8 +6,14 @@ import time
 import socket
 
 # Versión y cambios
-VERSION = "2.0"
+VERSION = "2.1"
 CHANGELOG = """
+
+v2.1 - 27/02/2026:
+  ✨ Mejoras en la integración de ChatGPT
+  ✨ Soporte para múltiples API keys
+  ✨ Mejoras en el manejo de errores
+
 v2.0 - 26/02/2026:
   ✨ Integración de ChatGPT (gpt, gptkey, chat)
   ✨ Herramientas de pentesting integradas (nmap, aircrack, etc)
@@ -44,7 +50,18 @@ def install_dependencies():
     print("🔧 INSTALADOR DE DEPENDENCIAS - LUCASMAN".center(70))
     print("="*70)
     print("\n⚠️  IMPORTANTE: El programa bloqueará hasta que todas las")
-    print("   dependencias estén instaladas. Por favor, espera...\n")
+    print("   dependencias estén instaladas. Por favor, espera...")
+    print("\n💡 (Presiona 'ñ' para SALTARSE la instalación sin instalar nada)\n")
+    
+    # Verificar si presiona ñ para saltarse
+    try:
+        skip_input = input("¿Continuar con la instalación? (Enter/ñ): ").strip().lower()
+        if skip_input == 'ñ':
+            print("⏭️  Instalación omitida. Cargando LUCASMAN...\n")
+            time.sleep(1)
+            return
+    except:
+        pass
     
     # Herramientas del sistema
     system_tools = [
@@ -63,55 +80,74 @@ def install_dependencies():
         "clamav"           # Antivirus
     ]
     
-    python_packages = ["openai>=1.0"]
+    python_packages = ["python3-openai"]  # Instalado con apt
     
-    total_tools = len(system_tools) + len(python_packages)
-    installed = 0
+    # Verificar qué dependencias NO están instaladas
+    tools_to_install = []
+    packages_to_install = []
     
-    print(f"📦 Total de paquetes a instalar: {total_tools}\n")
-    
-    # Instalar herramientas del sistema
+    # Verificar herramientas del sistema
     for dep in system_tools:
         try:
             result = subprocess.run(f"which {dep}", shell=True, capture_output=True, timeout=5)
-            if result.returncode == 0:
-                print(f"✅ {dep:25} - YA INSTALADO")
+            if result.returncode != 0:
+                tools_to_install.append(dep)
+        except:
+            tools_to_install.append(dep)
+    
+    # Verificar paquetes Python
+    for pkg in python_packages:
+        try:
+            result = subprocess.run(f"dpkg -l | grep {pkg}", shell=True, capture_output=True, timeout=5)
+            if result.returncode != 0:
+                packages_to_install.append(pkg)
+        except:
+            packages_to_install.append(pkg)
+    
+    total_to_install = len(tools_to_install) + len(packages_to_install)
+    
+    if total_to_install == 0:
+        print("✅ Todas las dependencias ya están instaladas.\n")
+        time.sleep(1)
+        return
+    
+    installed = 0
+    print(f"📦 Dependencias pendientes: {total_to_install}\n")
+    
+    # Instalar herramientas del sistema
+    for dep in tools_to_install:
+        try:
+            print(f"⬇️  {dep:25} - Instalando...", end=" ", flush=True)
+            cmd = f"sudo apt install -y {dep} > /dev/null 2>&1"
+            proc = subprocess.run(cmd, shell=True, timeout=300)
+            if proc.returncode == 0:
+                print("✅ Instalado")
                 installed += 1
             else:
-                print(f"⬇️  {dep:25} - Instalando...", end=" ", flush=True)
-                cmd = f"sudo apt install -y {dep} > /dev/null 2>&1"
-                proc = subprocess.run(cmd, shell=True, timeout=300)
-                if proc.returncode == 0:
-                    print("✅ Instalado")
-                    installed += 1
-                else:
-                    print("⚠️  Error (continuando...)")
+                print("⚠️  Error (continuando...)")
         except subprocess.TimeoutExpired:
             print("⏱️  Timeout (continuando...)")
         except Exception as e:
             print(f"❌ Error: {e}")
     
-    print()  # Espaciado
-    
-    # Instalar paquetes Python
-    for pkg in python_packages:
+    # Instalar paquetes Python con apt
+    for pkg in packages_to_install:
         try:
-            __import__(pkg)
-            print(f"✅ {pkg:25} - YA INSTALADO")
-            installed += 1
-        except ImportError:
             print(f"⬇️  {pkg:25} - Instalando...", end=" ", flush=True)
-            result = subprocess.run(f"pip install -q {pkg}", shell=True, timeout=300)
-            if result.returncode == 0:
+            cmd = f"sudo apt install -y {pkg} > /dev/null 2>&1"
+            proc = subprocess.run(cmd, shell=True, timeout=300)
+            if proc.returncode == 0:
                 print("✅ Instalado")
                 installed += 1
             else:
                 print("⚠️  Error (continuando...)")
+        except subprocess.TimeoutExpired:
+            print("⏱️  Timeout (continuando...)")
         except Exception as e:
             print(f"❌ Error: {e}")
     
     print("\n" + "="*70)
-    print(f"✅ INSTALACIÓN COMPLETADA: {installed}/{total_tools} paquetes listos")
+    print(f"✅ INSTALACIÓN COMPLETADA: {installed}/{total_to_install} paquetes instalados")
     print("="*70 + "\n")
     time.sleep(2)
 
@@ -367,7 +403,7 @@ def run_program():
   • netinfo         - Ver información completa de red
   • netstat         - Ver conexiones de red activas
 
-🌐 WEB (APACHE):
+🌐 WEB (APACHE):Por favor ejecuta el instalador de dependencias.
   • apache          - Iniciar servidor Apache2
   • apache stop     - Detener servidor Apache2
 
@@ -382,7 +418,7 @@ def run_program():
   • scan-dir <dir>  - Escanear un directorio completo
   • update-av       - Actualizar base de datos de virus
 
-🤖 CHAT GPT (IA):
+🤖 CHAT GPT (IA):Por favor ejecuta el instalador de dependencias.
   • gpt <pregunta>  - Hacer una pregunta a ChatGPT
   • gptkey <key>    - Configurar tu API key de OpenAI
   • chat            - Modo chat interactivo con GPT
@@ -397,7 +433,7 @@ def run_program():
                 """.format(VERSION))
             elif cmd.lower().startswith('gpt '):
                 if not HAS_OPENAI:
-                    print("❌ OpenAI no está instalado. Instálalo con: pip install openai")
+                    print("❌ OpenAI no está instalado. Por favor ejecuta el instalador de dependencias.")
                 else:
                     api_key = get_api_key()
                     if not api_key:
@@ -412,7 +448,7 @@ def run_program():
                 save_api_key(api_key)
             elif cmd.lower() == 'chat':
                 if not HAS_OPENAI:
-                    print("❌ OpenAI no está instalado. Instálalo con: pip install openai")
+                    print("❌ OpenAI no está instalado. Por favor ejecuta el instalador de dependencias.")
                 else:
                     api_key = get_api_key()
                     if not api_key:
