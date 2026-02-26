@@ -55,7 +55,8 @@ def install_dependencies():
         "hydra",           # Fuerza bruta
         "nikto",           # Escáner web
         "sqlmap",          # Inyección SQL
-        "netcat"           # Swiss army knife
+        "netcat",          # Swiss army knife
+        "clamav"           # Antivirus
     ]
     
     python_packages = ["openai"]
@@ -200,6 +201,61 @@ def show_hacking_tools():
         print(f"  • {tool:20} - {description}")
     print("="*70 + "\n")
 
+def scan_file_antivirus(filepath):
+    """Escanea un archivo individual con ClamAV"""
+    print(f"\n🛡️  Escaneando archivo: {filepath}")
+    print("="*70)
+    try:
+        result = subprocess.run(f"clamscan '{filepath}'", shell=True, capture_output=True, text=True, timeout=60)
+        print(result.stdout)
+        if result.returncode == 0:
+            print("✅ Archivo limpio")
+        elif result.returncode == 1:
+            print("⚠️  ¡VIRUS DETECTADO!")
+        else:
+            print(result.stderr)
+    except subprocess.TimeoutExpired:
+        print("⏱️  El escaneo tardó demasiado")
+    except Exception as e:
+        print(f"❌ Error: {e}")
+    print("="*70 + "\n")
+
+def scan_directory_antivirus(dirpath):
+    """Escanea un directorio completo con ClamAV"""
+    print(f"\n🛡️  Escaneando directorio: {dirpath}")
+    print("="*70)
+    try:
+        result = subprocess.run(f"clamscan -r '{dirpath}'", shell=True, capture_output=True, text=True, timeout=300)
+        print(result.stdout)
+        if result.returncode == 0:
+            print("✅ Directorio limpio")
+        elif result.returncode == 1:
+            print("⚠️  ¡AMENAZA DETECTADA!")
+        else:
+            print(result.stderr)
+    except subprocess.TimeoutExpired:
+        print("⏱️  El escaneo tardó demasiado")
+    except Exception as e:
+        print(f"❌ Error: {e}")
+    print("="*70 + "\n")
+
+def update_antivirus_db():
+    """Actualiza la base de datos de virus de ClamAV"""
+    print("\n🔄 Actualizando base de datos de virus...")
+    print("="*70)
+    try:
+        result = subprocess.run("sudo freshclam", shell=True, capture_output=True, text=True, timeout=120)
+        if result.returncode == 0:
+            print("✅ Base de datos actualizada correctamente")
+        else:
+            print(result.stdout)
+            print(result.stderr)
+    except subprocess.TimeoutExpired:
+        print("⏱️  La actualización tardó demasiado")
+    except Exception as e:
+        print(f"❌ Error: {e}")
+    print("="*70 + "\n")
+
 def run_program():
     install_dependencies()
     loading_screen()
@@ -253,6 +309,14 @@ def run_program():
                 print("="*70 + "\n")
             elif cmd.lower() == 'tools':
                 show_hacking_tools()
+            elif cmd.lower().startswith('scan '):
+                filepath = cmd[5:].strip()
+                scan_file_antivirus(filepath)
+            elif cmd.lower().startswith('scan-dir '):
+                dirpath = cmd[9:].strip()
+                scan_directory_antivirus(dirpath)
+            elif cmd.lower() == 'update-av':
+                update_antivirus_db()
             elif cmd.lower() == 'netinfo':
                 print("\n=== Información de Red ===")
                 print(f"IP Local: {get_my_ip()}")
@@ -292,6 +356,11 @@ def run_program():
   • nmap <host>     - Escaneo de puertos
   • aircrack-ng     - WiFi pentesting
   • hydra           - Fuerza bruta
+
+🛡️  ANTIVIRUS (CLAMAV):
+  • scan <archivo>  - Escanear archivo individual
+  • scan-dir <dir>  - Escanear un directorio completo
+  • update-av       - Actualizar base de datos de virus
 
 🤖 CHAT GPT (IA):
   • gpt <pregunta>  - Hacer una pregunta a ChatGPT
