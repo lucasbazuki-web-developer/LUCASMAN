@@ -5,6 +5,24 @@ import sys
 import time
 import socket
 
+# Versión y cambios
+VERSION = "2.0"
+CHANGELOG = """
+v2.0 - 26/02/2026:
+  ✨ Integración de ChatGPT (gpt, gptkey, chat)
+  ✨ Herramientas de pentesting integradas (nmap, aircrack, etc)
+  ✨ Instalación automática de herramientas de hacking
+  ✨ Bloqueo de programa hasta instalar dependencias
+  🔧 Mejora en UI y comandos
+  
+v1.0 - 25/02/2026:
+  ✨ Pantalla de carga
+  ✨ Gestión de archivos
+  ✨ Control de Apache2
+  ✨ Información de red (IP, netinfo, netstat)
+  ✨ Manejo de terminal (windows, closew)
+"""
+
 # Importar OpenAI si está disponible
 try:
     from openai import OpenAI
@@ -12,30 +30,85 @@ try:
 except ImportError:
     HAS_OPENAI = False
 
+def check_root():
+    """Verifica si se ejecuta como root"""
+    return os.geteuid() == 0 if hasattr(os, 'geteuid') else False
+
 def install_dependencies():
-    """Instala dependencias necesarias automáticamente"""
-    print("Verificando e instalando dependencias...")
-    dependencies = ["xterm", "apache2"]
+    """Instala dependencias necesarias automáticamente de forma bloqueante"""
+    print("\n" + "="*70)
+    print("🔧 INSTALADOR DE DEPENDENCIAS - LUCASMAN".center(70))
+    print("="*70)
+    print("\n⚠️  IMPORTANTE: El programa bloqueará hasta que todas las")
+    print("   dependencias estén instaladas. Por favor, espera...\n")
+    
+    # Herramientas del sistema
+    system_tools = [
+        "xterm",           # Terminal
+        "apache2",         # Servidor web
+        "nmap",            # Escaneo de puertos
+        "aircrack-ng",     # Pentesting WiFi
+        "wireshark",       # Análisis de tráfico
+        "hashcat",         # Cracking de hashes
+        "john",            # John the Ripper
+        "metasploit-framework",  # Framework de hacking
+        "hydra",           # Fuerza bruta
+        "nikto",           # Escáner web
+        "sqlmap",          # Inyección SQL
+        "netcat"           # Swiss army knife
+    ]
+    
     python_packages = ["openai"]
     
-    for dep in dependencies:
+    total_tools = len(system_tools) + len(python_packages)
+    installed = 0
+    
+    print(f"📦 Total de paquetes a instalar: {total_tools}\n")
+    
+    # Instalar herramientas del sistema
+    for dep in system_tools:
         try:
-            result = subprocess.run(f"which {dep}", shell=True, capture_output=True)
-            if result.returncode != 0:
-                print(f"  Instalando {dep}...")
-                subprocess.run(f"sudo apt install -y {dep}", shell=True)
+            result = subprocess.run(f"which {dep}", shell=True, capture_output=True, timeout=5)
+            if result.returncode == 0:
+                print(f"✅ {dep:25} - YA INSTALADO")
+                installed += 1
+            else:
+                print(f"⬇️  {dep:25} - Instalando...", end=" ", flush=True)
+                cmd = f"sudo apt install -y {dep} > /dev/null 2>&1"
+                proc = subprocess.run(cmd, shell=True, timeout=300)
+                if proc.returncode == 0:
+                    print("✅ Instalado")
+                    installed += 1
+                else:
+                    print("⚠️  Error (continuando...)")
+        except subprocess.TimeoutExpired:
+            print("⏱️  Timeout (continuando...)")
         except Exception as e:
-            print(f"  No se pudo instalar {dep}: {e}")
+            print(f"❌ Error: {e}")
+    
+    print()  # Espaciado
     
     # Instalar paquetes Python
     for pkg in python_packages:
         try:
             __import__(pkg)
+            print(f"✅ {pkg:25} - YA INSTALADO")
+            installed += 1
         except ImportError:
-            print(f"  Instalando paquete Python: {pkg}...")
-            subprocess.run(f"pip install -q {pkg}", shell=True)
+            print(f"⬇️  {pkg:25} - Instalando...", end=" ", flush=True)
+            result = subprocess.run(f"pip install -q {pkg}", shell=True, timeout=300)
+            if result.returncode == 0:
+                print("✅ Instalado")
+                installed += 1
+            else:
+                print("⚠️  Error (continuando...)")
+        except Exception as e:
+            print(f"❌ Error: {e}")
     
-    print("  Dependencias listas!\n")
+    print("\n" + "="*70)
+    print(f"✅ INSTALACIÓN COMPLETADA: {installed}/{total_tools} paquetes listos")
+    print("="*70 + "\n")
+    time.sleep(2)
 
 def loading_screen():
     print("Cargando LUCASMAN...")
@@ -105,6 +178,28 @@ def chat_gpt(message, api_key):
     except Exception as e:
         return f"Error: {str(e)}"
 
+def show_hacking_tools():
+    """Muestra las herramientas de hacking disponibles"""
+    tools = {
+        "nmap": "Escaneo de puertos y reconocimiento",
+        "aircrack-ng": "Pentesting de redes WiFi",
+        "wireshark": "Análisis de tráfico de red",
+        "hashcat": "Cracking acelerado de hashes",
+        "john": "John the Ripper - Cracking de passwords",
+        "hydra": "Ataques de fuerza bruta",
+        "nikto": "Escáner de vulnerabilidades web",
+        "sqlmap": "Detección y explotación de inyección SQL",
+        "netcat": "Herramienta de red versátil",
+        "metasploit": "Framework de penetración"
+    }
+    
+    print("\n" + "="*70)
+    print("🔓 HERRAMIENTAS DE PENTESTING DISPONIBLES".center(70))
+    print("="*70)
+    for tool, description in tools.items():
+        print(f"  • {tool:20} - {description}")
+    print("="*70 + "\n")
+
 def run_program():
     install_dependencies()
     loading_screen()
@@ -150,6 +245,14 @@ def run_program():
             elif cmd.lower() == 'myip':
                 my_ip = get_my_ip()
                 print(f"Tu IP local: {my_ip}")
+            elif cmd.lower() == 'version':
+                print("\n" + "="*70)
+                print(f"LUCASMAN v{VERSION}".center(70))
+                print("="*70)
+                print(CHANGELOG)
+                print("="*70 + "\n")
+            elif cmd.lower() == 'tools':
+                show_hacking_tools()
             elif cmd.lower() == 'netinfo':
                 print("\n=== Información de Red ===")
                 print(f"IP Local: {get_my_ip()}")
@@ -161,7 +264,7 @@ def run_program():
             elif cmd.lower() == 'help':
                 print("""
 ╔═══════════════════════════════════════════════════════════════╗
-║              LUCASMAN - Comandos Disponibles                  ║
+║              LUCASMAN v{} - Comandos Disponibles              ║
 ╚═══════════════════════════════════════════════════════════════╝
 
 📁 ARCHIVOS Y DIRECTORIOS:
@@ -184,18 +287,25 @@ def run_program():
   • apache          - Iniciar servidor Apache2
   • apache stop     - Detener servidor Apache2
 
+🔓 PENTESTING (HACKING):
+  • tools           - Ver herramientas de pentesting disponibles
+  • nmap <host>     - Escaneo de puertos
+  • aircrack-ng     - WiFi pentesting
+  • hydra           - Fuerza bruta
+
 🤖 CHAT GPT (IA):
   • gpt <pregunta>  - Hacer una pregunta a ChatGPT
   • gptkey <key>    - Configurar tu API key de OpenAI
   • chat            - Modo chat interactivo con GPT
 
-ℹ️  AYUDA:
+ℹ️  INFO:
+  • version         - Ver versión y cambios
   • help            - Mostrar esta ayuda
   • exit            - Salir del programa
 
 💡 COMANDOS DEL SISTEMA:
   • Puedes ejecutar cualquier comando del sistema (ej: mkdir, rm, etc.)
-                """)
+                """.format(VERSION))
             elif cmd.lower().startswith('gpt '):
                 if not HAS_OPENAI:
                     print("❌ OpenAI no está instalado. Instálalo con: pip install openai")

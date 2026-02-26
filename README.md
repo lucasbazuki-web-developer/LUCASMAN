@@ -35,6 +35,20 @@ Un programa simple escrito en Python para gestionar archivos y ejecutar comandos
 - `apache`: Iniciar servidor Apache2 en http://localhost.
 - `apache stop`: Detener servidor Apache2.
 
+### 🔓 Herramientas de Pentesting (Hacking)
+- `tools`: Ver todas las herramientas de pentesting disponibles.
+- `nmap <host>`: Escaneo de puertos y reconocimiento de servicios.
+- `aircrack-ng`: Suite para pentesting de redes WiFi.
+- `wireshark`: Analizador de tráfico de red.
+- `hashcat`: Cracking acelerado de hashes.
+- `john`: John the Ripper - Cracking de PASSWORD.
+- `hydra`: Herramienta de ataques de fuerza bruta.
+- `nikto`: Escáner de vulnerabilidades web.
+- `sqlmap`: Detección y explotación de inyección SQL.
+- `metasploit`: Framework completo de penetración.
+
+**Nota:** Todas las herramientas se instalan automáticamente al iniciar LUCASMAN por primera vez.
+
 ### 🤖 Chat GPT (Inteligencia Artificial)
 - `gptkey <tu_api_key>`: Configura tu clave API de OpenAI.
 - `gpt <pregunta>`: Haz una pregunta a ChatGPT y obtén respuesta inmediata.
@@ -42,7 +56,8 @@ Un programa simple escrito en Python para gestionar archivos y ejecutar comandos
 
 **Nota:** Necesitas una API key de OpenAI. Obtén la tuya en https://platform.openai.com/api-keys
 
-### ℹ️ Ayuda
+### ℹ️ Información
+- `version`: Ver versión actual y cambios realizados.
 - `help`: Mostrar help completo con todos los comandos.
 - `exit`: Salir del programa.
 
