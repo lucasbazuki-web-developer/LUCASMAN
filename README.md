@@ -6,36 +6,41 @@ Un programa simple escrito en Python para gestionar archivos y ejecutar comandos
 
 - **Pantalla de carga**: Animación cool al iniciar.
 - **Logo personalizado**: Muestra "LUCASMAN" en arte ASCII.
+- **Instalación automática de dependencias**: Al iniciar, instala xterm y apache2 automáticamente.
 - **Gestión de archivos**: Comandos como `ls`, `cd`, `pwd`.
-- **Comandos del sistema**: Ejecuta cualquier comando, incluyendo `shutdown`.
-- **Ejecución directa**: Se ejecuta en la terminal actual sin dependencias externas.
+- **Comandos del sistema**: Ejecuta cualquier comando.
+- **Servidor Apache**: Inicia/detiene Apache2 con un solo comando.
+- **Información de red**: Ver IP, interfaces de red y conexiones.
+- **Gestión de ventanas**: Abre y cierra ventanas de terminal.
 
-## Instalación con apt
+## Comandos Personalizados
 
-Para instalar LUCASMAN como un paquete Debian:
-
-1. Construye el paquete (si no está): `dpkg-deb --build deb_package lucasman_1.0_all.deb`
-2. Instala: `sudo dpkg -i lucasman_1.0_all.deb`
-3. Ejecuta: `lucasman`
-
-## Cómo Ejecutar (sin instalar)
-
-1. Asegúrate de tener Python 3 instalado.
-2. Ejecuta el programa: `python3 main.py`
-3. Interactúa con el prompt `LUCASMAN>`.
-4. Al hacer `exit`, el programa termina (la terminal queda abierta).
-
-## Comandos Especiales
-
+### 📁 Archivos y Directorios
+- `ls`: Listar archivos.
 - `cd <directorio>`: Cambiar directorio.
 - `pwd`: Mostrar directorio actual.
-- `ls`: Listar archivos.
 - `clear`: Limpiar pantalla.
-- `help`: Mostrar ayuda.
-- `windows`: Abrir nueva ventana de terminal (requiere xterm).
-- `shutdown`: Apagar el sistema (requiere permisos de sudo).
+
+### 🔧 Sistema
+- `shutdown`: Apagar el sistema (requiere sudo).
+- `windows`: Abrir nueva ventana de terminal xterm.
+- `closew`: Cerrar todas las ventanas xterm.
+
+### 🌐 Red e IP
+- `myip`: Ver tu IP local.
+- `netinfo`: Ver información completa de red e interfaces.
+- `netstat`: Ver conexiones de red activas.
+
+### 🌐 Servidor Web (Apache)
+- `apache`: Iniciar servidor Apache2 en http://localhost.
+- `apache stop`: Detener servidor Apache2.
+
+### ℹ️ Ayuda
+- `help`: Mostrar help completo con todos los comandos.
 - `exit`: Salir del programa.
-- Cualquier comando del sistema.
+
+### 💡 Comandos del Sistema
+- Puedes ejecutar cualquier comando del sistema (ej: mkdir, rm, ps, etc.).
 
 ## Requisitos
 
