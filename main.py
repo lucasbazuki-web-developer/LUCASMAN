@@ -27,8 +27,12 @@ v1.0 - 25/02/2026:
 try:
     from openai import OpenAI
     HAS_OPENAI = True
-except ImportError:
-    HAS_OPENAI = False
+except (ImportError, ModuleNotFoundError):
+    try:
+        import openai
+        HAS_OPENAI = True
+    except (ImportError, ModuleNotFoundError):
+        HAS_OPENAI = False
 
 def check_root():
     """Verifica si se ejecuta como root"""
@@ -59,7 +63,7 @@ def install_dependencies():
         "clamav"           # Antivirus
     ]
     
-    python_packages = ["openai"]
+    python_packages = ["openai>=1.0"]
     
     total_tools = len(system_tools) + len(python_packages)
     installed = 0
@@ -169,15 +173,31 @@ def save_api_key(api_key):
 def chat_gpt(message, api_key):
     """Envía un mensaje a ChatGPT y obtiene la respuesta"""
     try:
-        client = OpenAI(api_key=api_key)
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": message}],
-            max_tokens=500
-        )
-        return response.choices[0].message.content
+        # Intentar con OpenAI 1.0+ (cliente)
+        if HAS_OPENAI:
+            try:
+                from openai import OpenAI
+                client = OpenAI(api_key=api_key)
+                response = client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=[{"role": "user", "content": message}],
+                    max_tokens=500
+                )
+                return response.choices[0].message.content
+            except (ImportError, AttributeError):
+                # Fallback para versiones antiguas de OpenAI
+                import openai
+                openai.api_key = api_key
+                response = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages=[{"role": "user", "content": message}],
+                    max_tokens=500
+                )
+                return response.choices[0].message.content
+        else:
+            return "❌ Error: OpenAI no está instalado"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"❌ Error: {str(e)}"
 
 def show_hacking_tools():
     """Muestra las herramientas de hacking disponibles"""
